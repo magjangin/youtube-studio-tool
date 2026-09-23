@@ -1,0 +1,40 @@
+// Hides subscriber counts (static metrics + the realtime widget) on YouTube Studio.
+// Registered as a WebView2 document-created script, so this runs before <html>/<head> exist yet -
+// document.head and document.documentElement are both null at that point. The MutationObserver
+// below is what actually lands the style, as soon as the parser adds a node to attach it to; it's
+// also what keeps it alive across YouTube Studio's SPA client-side route changes.
+(function () {
+    function injectStyle() {
+        if (document.getElementById('hide-sub-style')) return;
+        const target = document.head || document.documentElement;
+        if (!target) return;
+
+        const style = document.createElement('style');
+        style.id = 'hide-sub-style';
+        style.textContent = `
+            .metric-value-big,
+            .subscribers-count,
+            #subscribers-count,
+            ytcp-stat-metric[metric-id="SUBSCRIBERS"] .value,
+            ytcp-animating-number,
+            #count,
+            #count-container,
+            #primary-value,
+            ytcp-sub-count-dialog #count-container,
+            .metric-value.yta-latest-activity-card {
+                visibility: hidden !important;
+                color: transparent !important;
+            }
+        `;
+        target.appendChild(style);
+    }
+
+    injectStyle();
+
+    if (window.__hideSubCountObserver) {
+        window.__hideSubCountObserver.disconnect();
+    }
+    const observer = new MutationObserver(injectStyle);
+    observer.observe(document, { childList: true, subtree: true });
+    window.__hideSubCountObserver = observer;
+})();
