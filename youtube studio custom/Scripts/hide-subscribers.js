@@ -21,7 +21,9 @@
             #count-container,
             #primary-value,
             ytcp-sub-count-dialog #count-container,
-            .metric-value.yta-latest-activity-card {
+            .metric-value.yta-latest-activity-card,
+            yt-card-view-model[data-hide-sub-card="true"] ytcp-simple-metric-view-model,
+            yt-card-view-model[data-hide-sub-card="true"] .ytcpSimpleMetricValue {
                 visibility: hidden !important;
                 color: transparent !important;
             }
@@ -29,12 +31,35 @@
         target.appendChild(style);
     }
 
-    injectStyle();
+    const TARGET_CARD_TITLES = new Set(['총 구독자 수', 'Total subscribers']);
+
+    function updateSubscriberCards() {
+        const titles = document.querySelectorAll('yt-card-view-model .ytShelfHeaderLayoutTitle');
+        for (const titleEl of titles) {
+            const card = titleEl.closest('yt-card-view-model');
+            if (!card) continue;
+
+            if (TARGET_CARD_TITLES.has(titleEl.textContent.trim())) {
+                if (card.getAttribute('data-hide-sub-card') !== 'true') {
+                    card.setAttribute('data-hide-sub-card', 'true');
+                }
+            } else if (card.hasAttribute('data-hide-sub-card')) {
+                card.removeAttribute('data-hide-sub-card');
+            }
+        }
+    }
+
+    function applyHiding() {
+        injectStyle();
+        updateSubscriberCards();
+    }
+
+    applyHiding();
 
     if (window.__hideSubCountObserver) {
         window.__hideSubCountObserver.disconnect();
     }
-    const observer = new MutationObserver(injectStyle);
-    observer.observe(document, { childList: true, subtree: true });
+    const observer = new MutationObserver(applyHiding);
+    observer.observe(document, { childList: true, subtree: true, characterData: true });
     window.__hideSubCountObserver = observer;
 })();
