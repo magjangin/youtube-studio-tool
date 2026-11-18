@@ -27,6 +27,15 @@
                 visibility: hidden !important;
                 color: transparent !important;
             }
+
+            /* Advanced mode > Realtime performance (explore_type=LATEST_ACTIVITY): the pinned
+               total row's mini bar charts sit right above the per-video ones and read like an
+               extra video row. Hide those charts, plus the last-60-minutes total next to them;
+               the 48-hour total (#debug-hourly-total) stays. */
+            yta-explore-latest-activity-row #row-container[total-row] yta-tiny-chart,
+            yta-explore-latest-activity-row #row-container[total-row] #debug-minutely-total {
+                visibility: hidden !important;
+            }
         `;
         target.appendChild(style);
     }
