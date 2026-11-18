@@ -34,7 +34,7 @@
 코드 주석과 기존 문서에서 작성자가 남긴 의도·주의 문장을 그대로 옮겼다(파일:줄).
 
 - `youtube studio custom\YoutubeStudioWebView.cs:27` — cookies survive across app restarts instead of using a throwaway profile.
-- **(2026-11-18 추가, 실측)** 고급 모드 > 실시간 실적(`explore_type=LATEST_ACTIVITY`) 표의 맨 위 **합계 행 미니 막대그래프만** 숨긴다. 영상 행 그래프 바로 위에 붙어 있어 영상이 1개 더 있는 것처럼 헷갈린다는 사용자 요청. 같은 요청으로 합계 행의 **지난 60분 합계 숫자**(`#debug-minutely-total`)도 숨긴다. 지난 48시간 합계(`#debug-hourly-total`)는 그대로 둔다. selector: `yta-explore-latest-activity-row #row-container[total-row] yta-tiny-chart`, `... #row-container[total-row] #debug-minutely-total` (`hide-subscribers.js`의 주입 CSS). 합계 행은 `#row-container`에 붙는 `total-row` 속성으로만 구분된다(텍스트 '합계'에 의존하지 않음).
+- **(2026-11-18 추가, 실측)** 고급 모드 > 실시간 실적(`explore_type=LATEST_ACTIVITY`) 표의 맨 위 **합계 행 미니 막대그래프만** 숨긴다. 영상 행 그래프 바로 위에 붙어 있어 영상이 1개 더 있는 것처럼 헷갈린다는 사용자 요청. 이후 사용자 요청으로 합계 행의 **합계 숫자 두 개**(지난 48시간 `#debug-hourly-total`, 지난 60분 `#debug-minutely-total`)도 숨긴다. 합계 행에는 '합계' 글자만 남는다. selector: `yta-explore-latest-activity-row #row-container[total-row]` 아래의 `yta-tiny-chart`, `#debug-hourly-total`, `#debug-minutely-total` (`hide-subscribers.js`의 주입 CSS). 합계 행은 `#row-container`에 붙는 `total-row` 속성으로만 구분된다(텍스트 '합계'에 의존하지 않음).
 
 ## 4. 핵심 훅 시그니처와 주입 파이프라인
 
